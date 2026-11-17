@@ -18,7 +18,17 @@ Configs do Sway, Waybar, Mako e Kanshi.
 - `$mod+Ctrl+1..6` – conectar/desconectar os dispositivos bluetooth (ímpar conecta, par desconecta)
 - `$mod+r` – entra e sai do modo resize
 
-## Instalar
+## Instalação completa (Fedora 45 recém-instalado)
+O script `post-install-fedora45-sway.sh` instala os apps e ferramentas, clona este repo e aplica as configs:
+```bash
+curl -fsSLO https://raw.githubusercontent.com/lcastropg/i3Files/main/sway/post-install-fedora45-sway.sh
+chmod +x post-install-fedora45-sway.sh
+./post-install-fedora45-sway.sh -c notebook   # ou -c desktop
+```
+- `notebook`: configs como estão aqui (workspaces 1–5 no `eDP-1`, 6–10 no externo, kanshi).
+- `desktop`: workspaces 1–5 no `DP-1` e 6–10 no `HDMI-A-1`, waybar sem bateria, sem kanshi.
+
+## Instalar só as configs
 ```bash
 sudo dnf install sway waybar mako kanshi cliphist wl-clipboard grimshot swaylock rofi
 mkdir -p ~/.config
