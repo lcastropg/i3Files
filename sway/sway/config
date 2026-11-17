@@ -83,6 +83,10 @@ input type:touchpad {
     # Start your launcher
     bindsym $mod+d exec $menu
 
+    # Rofi: trocar de janela / menu de energia (rofi-power-menu em ~/.local/bin)
+    bindsym $mod+Shift+d exec rofi -show window
+    bindsym $mod+Ctrl+d exec rofi -show power-menu -modi "power-menu:rofi-power-menu --no-symbols"
+
     # Notificacoes (mako)
     bindsym $mod+n exec makoctl dismiss
     bindsym $mod+Shift+n exec makoctl dismiss --all
@@ -112,6 +116,14 @@ input type:touchpad {
 
 # start applications
     bindsym $mod+c exec google-chrome
+
+    # Bluetooth: conectar/desconectar dispositivos
+    bindsym $mod+Ctrl+1 exec bluetoothctl connect 34:D0:B8:92:FE:8F
+    bindsym $mod+Ctrl+2 exec bluetoothctl disconnect 34:D0:B8:92:FE:8F
+    bindsym $mod+Ctrl+3 exec bluetoothctl connect 2E:E6:4E:E1:E2:B1
+    bindsym $mod+Ctrl+4 exec bluetoothctl disconnect 2E:E6:4E:E1:E2:B1
+    bindsym $mod+Ctrl+5 exec bluetoothctl connect 84:AC:60:95:00:6B
+    bindsym $mod+Ctrl+6 exec bluetoothctl disconnect 84:AC:60:95:00:6B
 
 
 #
@@ -164,6 +176,10 @@ input type:touchpad {
     bindsym $mod+Shift+9 move container to workspace number 9
     bindsym $mod+Shift+0 move container to workspace number 10
     # Note: workspaces can have any name you want, not just numbers.
+
+    # Mover o workspace inteiro para o outro monitor
+    bindsym $mod+Ctrl+greater move workspace to output right
+    bindsym $mod+Ctrl+less move workspace to output left
 
     # Workspaces por monitor: 1-5 no notebook, 6-10 no externo (fallback eDP-1)
     workspace 1 output eDP-1
@@ -236,6 +252,7 @@ mode "resize" {
     # Return to default mode
     bindsym Return mode "default"
     bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
 }
 bindsym $mod+r mode "resize"
 
@@ -279,5 +296,8 @@ for_window [class="Google-chrome"] mark Browser
 # Clipboard: guarda historico de texto e imagens
 exec wl-paste --type text --watch cliphist store
 exec wl-paste --type image --watch cliphist store
+
+# Autostart
+exec megasync
 
 include '$(/usr/libexec/sway/layered-include "/usr/share/sway/config.d/*.conf" "/etc/sway/config.d/*.conf" "${XDG_CONFIG_HOME:-$HOME/.config}/sway/config.d/*.conf")'
