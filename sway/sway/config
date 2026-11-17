@@ -64,6 +64,12 @@ input type:keyboard {
     xkb_options "grp:ctrl_space_toggle"
 }
 
+# Touchpad: toque para clicar
+input type:touchpad {
+    tap enabled
+    dwt disabled
+}
+
 ### Key bindings
 #
 # Basics:
@@ -80,6 +86,15 @@ input type:keyboard {
     # Notificacoes (mako)
     bindsym $mod+n exec makoctl dismiss
     bindsym $mod+Shift+n exec makoctl dismiss --all
+
+    # Bloquear a tela
+    bindsym $mod+Escape exec swaylock -f
+
+    # Print de uma area direto pra area de transferencia
+    bindsym Shift+Print exec grimshot copy area
+
+    # Historico do clipboard (cliphist + rofi)
+    bindsym $mod+Shift+v exec cliphist list | rofi -dmenu -p clipboard | cliphist decode | wl-copy
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -156,11 +171,11 @@ input type:keyboard {
     workspace 3 output eDP-1
     workspace 4 output eDP-1
     workspace 5 output eDP-1
-    workspace 6  output DP-0 DP-1 DP-2 HDMI-A-1 eDP-1
-    workspace 7  output DP-0 DP-1 DP-2 HDMI-A-1 eDP-1
-    workspace 8  output DP-0 DP-1 DP-2 HDMI-A-1 eDP-1
-    workspace 9  output DP-0 DP-1 DP-2 HDMI-A-1 eDP-1
-    workspace 10 output DP-0 DP-1 DP-2 HDMI-A-1 eDP-1
+    workspace 6  output DP-1 DP-2 HDMI-A-1 eDP-1
+    workspace 7  output DP-1 DP-2 HDMI-A-1 eDP-1
+    workspace 8  output DP-1 DP-2 HDMI-A-1 eDP-1
+    workspace 9  output DP-1 DP-2 HDMI-A-1 eDP-1
+    workspace 10 output DP-1 DP-2 HDMI-A-1 eDP-1
     # We just use 1-10 as the default.
 #
 # Layout stuff:
@@ -254,5 +269,15 @@ font pango:Noto Sans Mono 8
 # Borda de 1px (mantem a barra de titulo)
 default_border normal 1
 default_floating_border normal 1
+# Esconde as bordas laterais quando ha so uma janela no workspace
+hide_edge_borders smart
+
+# Chrome: nao bloquear a tela com video em tela cheia
+for_window [app_id="google-chrome"] mark Browser
+for_window [class="Google-chrome"] mark Browser
+
+# Clipboard: guarda historico de texto e imagens
+exec wl-paste --type text --watch cliphist store
+exec wl-paste --type image --watch cliphist store
 
 include '$(/usr/libexec/sway/layered-include "/usr/share/sway/config.d/*.conf" "/etc/sway/config.d/*.conf" "${XDG_CONFIG_HOME:-$HOME/.config}/sway/config.d/*.conf")'
