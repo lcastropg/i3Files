@@ -140,12 +140,12 @@ setup_dotfiles_repo() {
     retry git clone "$DOTFILES_REPO" "$DOTFILES_DIR"
   fi
 }
-# Copia sway, waybar, mako e kanshi para ~/.config. O que ja existir vai para <dir>.bak-<data>.
+# Copia sway, swaylock, waybar, mako e kanshi para ~/.config. O que ja existir vai para <dir>.bak-<data>.
 apply_dotfiles() {
   local src="$DOTFILES_DIR/sway" name
   [[ -d "$src" ]] || { log "Pasta nao encontrada: $src"; return 1; }
   mkdir -p "$HOME/.config"
-  local names=(sway waybar mako)
+  local names=(sway swaylock waybar mako)
   [[ "$PROFILE" == notebook ]] && names+=(kanshi)
   for name in "${names[@]}"; do
     [[ -d "$src/$name" ]] || continue
@@ -195,7 +195,7 @@ umask 077
 stamp="$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$HOME/Backups"
 items=()
-for item in .config/sway .config/rofi .config/mako .config/waybar .config/kanshi .config/foot .config/alacritty .zshrc .gitconfig .ssh/config; do
+for item in .config/sway .config/swaylock .config/rofi .config/mako .config/waybar .config/kanshi .config/foot .config/alacritty .zshrc .gitconfig .ssh/config; do
   [[ -e "$HOME/$item" ]] && items+=("$item")
 done
 if (( ${#items[@]} == 0 )); then echo 'Nenhuma configuracao encontrada.'; exit 0; fi

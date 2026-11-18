@@ -1,0 +1,44 @@
+# Sobrescreve /etc/swaylock/config (que usa default.jxl)
+# Fundo preto sólido: bloqueia instantâneo, sem decodificar imagem
+color=000000
+
+ignore-empty-password
+show-failed-attempts
+indicator-caps-lock
+show-keyboard-layout
+
+font=Noto Sans Mono
+font-size=16
+indicator-radius=80
+indicator-thickness=8
+
+# Paleta da waybar (fg #c8ccd4, dim #6b7280, accent #8ab4f8, warn #e5c07b, crit #e06c75, ok #98c379)
+inside-color=14161cff
+inside-clear-color=14161cff
+inside-ver-color=14161cff
+inside-wrong-color=14161cff
+inside-caps-lock-color=14161cff
+
+ring-color=6b7280ff
+ring-clear-color=e5c07bff
+ring-ver-color=8ab4f8ff
+ring-wrong-color=e06c75ff
+ring-caps-lock-color=e5c07bff
+
+line-uses-inside
+separator-color=00000000
+
+key-hl-color=8ab4f8ff
+bs-hl-color=e06c75ff
+caps-lock-key-hl-color=e5c07bff
+caps-lock-bs-hl-color=e06c75ff
+
+text-color=c8ccd4ff
+text-clear-color=e5c07bff
+text-ver-color=8ab4f8ff
+text-wrong-color=e06c75ff
+text-caps-lock-color=e5c07bff
+
+layout-bg-color=00000000
+layout-border-color=00000000
+layout-text-color=6b7280ff

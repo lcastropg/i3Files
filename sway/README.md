@@ -1,15 +1,17 @@
 # Dotfiles – Sway (Fedora)
 
-Configs do Sway, Waybar, Mako e Kanshi.
+Configs do Sway, Swaylock, Waybar, Mako e Kanshi.
 
 ## Conteúdo
 - `sway/config` – Sway (fonte, borda, workspaces por monitor, teclado US/ABNT2, atalhos)
+- `sway/config.d/90-swayidle.conf` – substitui o swayidle padrão do Fedora: 5 min ocioso bloqueia e apaga a tela; bloqueio manual apaga a tela após 60 s
+- `swaylock/config` – tela de bloqueio (fundo preto, cores da waybar, aviso de Caps Lock e layout)
 - `waybar/` – barra (`config.jsonc` e `style.css`)
 - `mako/config` – notificações
 - `kanshi/config` – perfis de monitor aplicados automaticamente ao plugar/desplugar (notebook sozinho; notebook + projetor Epson)
 
 ## Atalhos extras
-- `$mod+Escape` – bloquear a tela (swaylock)
+- `$mod+Escape` – bloquear a tela (`loginctl lock-session` → swayidle → swaylock)
 - `Shift+Print` – print de uma área direto para o clipboard
 - `$mod+Shift+v` – histórico do clipboard (cliphist + rofi)
 - `$mod+Shift+d` – trocar de janela (rofi window)
@@ -32,7 +34,7 @@ chmod +x post-install-fedora45-sway.sh
 ```bash
 sudo dnf install sway waybar mako kanshi cliphist wl-clipboard grimshot swaylock rofi
 mkdir -p ~/.config
-cp -r sway waybar mako kanshi ~/.config/
+cp -r sway swaylock waybar mako kanshi ~/.config/
 systemctl --user enable --now kanshi
 
 # Menu de energia (https://github.com/jluttine/rofi-power-menu)

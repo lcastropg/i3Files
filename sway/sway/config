@@ -92,7 +92,7 @@ input type:touchpad {
     bindsym $mod+Shift+n exec makoctl dismiss --all
 
     # Bloquear a tela
-    bindsym $mod+Escape exec swaylock -f
+    bindsym $mod+Escape exec loginctl lock-session
 
     # Print de uma area direto pra area de transferencia
     bindsym Shift+Print exec grimshot copy area
