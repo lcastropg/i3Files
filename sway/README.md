@@ -5,6 +5,7 @@ Configs do Sway, Swaylock, Waybar, Mako e Kanshi.
 ## Conteúdo
 - `sway/config` – Sway (fonte, borda, workspaces por monitor, teclado US/ABNT2, atalhos)
 - `sway/config.d/90-swayidle.conf` – substitui o swayidle padrão do Fedora: 5 min ocioso bloqueia e apaga a tela; bloqueio manual apaga a tela após 60 s
+- `sway/scripts/wallpaper-rotate.sh` – troca o wallpaper a cada 15 min entre as imagens de `~/Pictures/Wallpapers/landscapes` (ordem aleatória; `pkill -USR1 -f wallpaper-rotate.sh` pula para a próxima). As imagens não ficam no repo: o post-install baixa do Wikimedia Commons as listadas em `wallpapers/CREDITS.json` (autor e licença de cada uma); sem elas, fica o wallpaper padrão do Fedora
 - `swaylock/config` – tela de bloqueio (fundo preto, cores da waybar, aviso de Caps Lock e layout)
 - `waybar/` – barra (`config.jsonc` e `style.css`)
 - `mako/config` – notificações

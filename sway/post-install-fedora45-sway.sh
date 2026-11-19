@@ -179,6 +179,27 @@ setup_rofi_power_menu() {
   install -Dm755 "$tmp" "$dest"
   rm -f "$tmp"
 }
+# Wallpapers do wallpaper-rotate.sh: baixa do Wikimedia Commons as imagens listadas em wallpapers/CREDITS.json
+setup_wallpapers() {
+  local credits="$DOTFILES_DIR/sway/wallpapers/CREDITS.json" dest="$HOME/Pictures/Wallpapers/landscapes"
+  local file name width tmp fail=0
+  [[ -f "$credits" ]] || { log "Arquivo nao encontrado: $credits"; return 1; }
+  mkdir -p "$dest"
+  cp "$credits" "$dest/CREDITS.json"
+  while IFS=$'\t' read -r file name width; do
+    [[ -s "$dest/$file" ]] && continue
+    tmp="$(mktemp)"
+    if retry curl -fsSL -A 'fedora-post-install/1.0' -o "$tmp" \
+         "https://commons.wikimedia.org/wiki/Special:FilePath/$name?width=$width"; then
+      mv "$tmp" "$dest/$file"; log "Wallpaper: $file"
+    else
+      rm -f "$tmp"; log "Falha ao baixar wallpaper: $file"; fail=1
+    fi
+  done < <(python3 -I -c 'import json,sys
+for d in json.load(open(sys.argv[1])):
+    print(d["file"], d["page"].split("/wiki/File:", 1)[1], d["w"], sep="\t")' "$credits")
+  return "$fail"
+}
 # Perfis de monitor automaticos ao plugar/desplugar
 setup_kanshi() {
   systemctl --user enable kanshi.service
@@ -238,7 +259,7 @@ install_group 'MEGAsync' \
   qt5-qtgraphicaleffects qt5-qtquickcontrols qt5-qtquickcontrols2 megasync
 
 install_group 'Wayland e Sway' \
-  sway swaylock swayidle waybar foot mako kanshi lxqt-policykit \
+  sway swaybg swaylock swayidle waybar foot mako kanshi lxqt-policykit \
   xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk \
   wl-clipboard cliphist grim slurp grimshot brightnessctl playerctl
 
@@ -263,12 +284,13 @@ done
 step 'Dotfiles: clonar/atualizar i3Files' setup_dotfiles_repo
 step 'Dotfiles: aplicar sway/waybar/mako/kanshi' apply_dotfiles
 step 'rofi-power-menu' setup_rofi_power_menu
+step 'Wallpapers (Wikimedia Commons)' setup_wallpapers
 if [[ "$PROFILE" == notebook ]]; then step 'kanshi (servico do usuario)' setup_kanshi; fi
 if [[ -n "${SWAYSOCK:-}" ]]; then step 'Recarregar sway' swaymsg reload; fi
 
 log 'Verificacoes finais'
 for cmd in java javac code google-chrome-stable wdisplays easyeffects nautilus megasync rofi rofi-power-menu \
-           btop vlc solaar zsh zathura sway waybar mako kanshi cliphist grimshot swaylock pavucontrol blueman-manager; do
+           btop vlc solaar zsh zathura sway waybar mako kanshi cliphist grimshot swaybg swaylock pavucontrol blueman-manager; do
   if command -v "$cmd" >/dev/null 2>&1; then
     printf 'OK      %s\n' "$cmd"
   else

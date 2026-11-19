@@ -23,6 +23,7 @@ set $menu $rofi_cmd -show combi -combi-modes drun#run -modes combi
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 # Requires: desktop-backgrounds-compat, swaybg, jxl-pixbuf-loader
 output * bg /usr/share/backgrounds/default.jxl fill
+# Fallback acima; o wallpaper real roda via scripts/wallpaper-rotate.sh (Autostart)
 #
 # Example configuration:
 #
@@ -299,5 +300,8 @@ exec wl-paste --type image --watch cliphist store
 
 # Autostart
 exec megasync
+
+# Wallpaper: troca a cada 15 min entre ~/Pictures/Wallpapers/landscapes (exec_always: reinicia no reload)
+exec_always ~/.config/sway/scripts/wallpaper-rotate.sh
 
 include '$(/usr/libexec/sway/layered-include "/usr/share/sway/config.d/*.conf" "/etc/sway/config.d/*.conf" "${XDG_CONFIG_HOME:-$HOME/.config}/sway/config.d/*.conf")'
