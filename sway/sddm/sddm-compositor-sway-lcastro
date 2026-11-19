@@ -1,0 +1,12 @@
+#!/usr/bin/sh
+# Igual a /usr/libexec/sddm-compositor-sway, mas usando o config do greeter deste repo
+# (o /etc/sway/sddm-greeter.config pertence ao pacote e é sobrescrito em updates).
+set -- --config /etc/sway/sddm-greeter-lcastro.config "$@"
+
+if [ -x /usr/bin/start-sway ]; then
+    . /usr/bin/start-sway
+    exit 1
+fi
+
+# Sem sway-config-fedora: volta pro wrapper original
+exec /usr/libexec/sddm-compositor-sway "$@"

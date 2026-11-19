@@ -1,0 +1,12 @@
+[SddmGreeterTheme]
+Name=Sway-lcastro
+Description=Tema de login com a paleta da waybar/swaylock (baseado no 03-sway-fedora)
+Author=lcastro
+License=CC-BY-SA-3.0 AND MIT
+Type=sddm-theme
+Version=0.1
+MainScript=Main.qml
+ConfigFile=theme.conf
+Theme-Id=sway-lcastro
+Theme-API=2.0
+QtVersion=6
