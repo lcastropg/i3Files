@@ -4,7 +4,8 @@
 #
 # Uso: ./post-install-fedora45-sway.sh -c desktop|notebook
 #   notebook  configs como estao no repo (workspaces 1-5 no eDP-1, 6-10 no externo, kanshi)
-#   desktop   workspaces 1-5 no DP-1 e 6-10 no HDMI-A-1, waybar sem bateria, sem kanshi
+#   desktop   workspaces 1-5 no DP-1 e 6-10 no HDMI-A-1, waybar sem bateria, sem kanshi,
+#             modos de monitor work/fun e bloqueio por ociosidade sem desligar as telas
 set -Eeuo pipefail
 
 usage() { echo "Uso: $0 -c desktop|notebook"; }
@@ -169,6 +170,45 @@ apply_desktop_overrides() {
   [[ -f "$waybar" ]] && sed -i -E '/^[[:space:]]*"battery",[[:space:]]*$/d' "$waybar"
   log 'Perfil desktop aplicado: workspaces 1-5 -> DP-1, 6-10 -> HDMI-A-1; waybar sem bateria'
   grep -nE '^[[:space:]]*workspace[[:space:]]+[0-9]+[[:space:]]+output' "$sway"
+  apply_desktop_displays
+}
+# Modos de monitor do desktop: work = so o LG 4K (HDMI-A-1) / fun = ASUS (DP-1) + LG
+apply_desktop_displays() {
+  local sway="$HOME/.config/sway/config" idle="$HOME/.config/sway/config.d/90-swayidle.conf" frag
+  frag="$(mktemp -d)"
+  cat > "$frag/outputs" <<'SWAY'
+# Monitores: login/reload = so o LG 4K (modo work). $mod+Shift+f religa o ASUS
+output HDMI-A-1 enable position 2560 0
+output DP-1 mode 2560x1440@164.999Hz position 0 0
+output DP-1 disable
+SWAY
+  cat > "$frag/binds" <<'SWAY'
+
+    # Monitores: work = so o LG 4K / fun = ASUS + LG
+    bindsym $mod+Shift+w output HDMI-A-1 enable, output DP-1 disable
+    bindsym $mod+Shift+f output HDMI-A-1 enable position 2560 0, output DP-1 enable mode 2560x1440@164.999Hz position 0 0
+SWAY
+  sed -i -E \
+    -e "/^# Fallback acima;/r $frag/outputs" \
+    -e "/exec makoctl dismiss --all/r $frag/binds" \
+    "$sway"
+  rm -rf "$frag"
+  mkdir -p "${idle%/*}"
+  cat > "$idle" <<'SWAY'
+# Sobrescreve /usr/share/sway/config.d/90-swayidle.conf (mesmo nome = prioridade)
+# 5 min ocioso: só bloqueia. Sem power off das telas: o LG 4K@60 (HDMI/nouveau)
+# fica caindo e reconectando depois de religar.
+exec swayidle -w \
+    timeout 300 'swaylock -f' \
+    before-sleep 'swaylock -f' \
+    lock 'swaylock -f' \
+    unlock 'pkill -xu "$USER" -SIGUSR1 swaylock'
+SWAY
+  # As ancoras do sed podem mudar no config do repo: sem elas, falha visivel no log
+  if ! grep -q '^output DP-1 disable' "$sway" || ! grep -qF 'Shift+f output HDMI-A-1' "$sway"; then
+    log "Modos work/fun nao foram inseridos em $sway"
+    return 1
+  fi
 }
 # Menu de energia do rofi ($mod+Ctrl+d): https://github.com/jluttine/rofi-power-menu
 setup_rofi_power_menu() {
@@ -276,8 +316,9 @@ install_group 'Fontes e PDF' \
 install_group 'Backup' restic borgbackup
 step 'Script local de backup' setup_backup
 
-# Um unico formato para LibreOffice: Flatpak. Spotify e Zotero tambem via Flathub.
-for app in com.spotify.Client org.zotero.Zotero org.libreoffice.LibreOffice; do
+# Um unico formato para LibreOffice: Flatpak. Spotify, Zotero e Teams (Portal for Teams) tambem via Flathub.
+for app in com.spotify.Client org.zotero.Zotero org.libreoffice.LibreOffice \
+           com.github.IsmaelMartinez.teams_for_linux; do
   step "Flatpak / $app" install_flatpak "$app"
 done
 
@@ -306,6 +347,7 @@ printf '\nLog completo: %s\n' "$LOG_FILE"
 printf 'Shell Zsh instalada, mas NAO alterada automaticamente. Para tornar padrao: chsh -s "$(command -v zsh || echo /usr/bin/zsh)"\n'
 if [[ "$PROFILE" == desktop ]]; then
   printf 'Desktop: confira os nomes dos monitores com "swaymsg -t get_outputs" (esperado DP-1 e HDMI-A-1).\n'
+  printf 'Desktop: inicia no modo work (so HDMI-A-1). $mod+Shift+f = fun (DP-1 + HDMI-A-1), $mod+Shift+w = work.\n'
 fi
 printf 'Faca logout/login no Sway para ativar portais, cliphist e megasync.\n'
 if (( ${#FAILED[@]} )); then exit 1; fi

@@ -32,7 +32,12 @@ chmod +x post-install-fedora45-sway.sh
 ./post-install-fedora45-sway.sh -c notebook   # ou -c desktop
 ```
 - `notebook`: configs como estão aqui (workspaces 1–5 no `eDP-1`, 6–10 no externo, kanshi).
-- `desktop`: workspaces 1–5 no `DP-1` e 6–10 no `HDMI-A-1`, waybar sem bateria, sem kanshi.
+- `desktop`: workspaces 1–5 no `DP-1` e 6–10 no `HDMI-A-1`, waybar sem bateria, sem kanshi, e mais:
+  - **modo work** (padrão no login/reload): só o LG 4K (`HDMI-A-1`) – `$mod+Shift+w`
+  - **modo fun**: ASUS 1440p@165 (`DP-1`) à esquerda + LG – `$mod+Shift+f`
+  - ocioso por 5 min só bloqueia, sem desligar as telas (o LG 4K@60 cai e reconecta depois de religar)
+
+Nos dois perfis entram via Flathub: Spotify, Zotero, LibreOffice e Teams (`com.github.IsmaelMartinez.teams_for_linux`).
 
 ## Instalar só as configs
 ```bash
